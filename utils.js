@@ -1,11 +1,11 @@
 /*
  * @Author: your name
  * @Date: 2020-07-21 13:42:15
- * @LastEditTime: 2020-07-22 09:23:05
+ * @LastEditTime: 2020-07-22 10:45:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /le-js/utils.js
- */ 
+ */
 
 /**
  * 表单序列化
@@ -281,7 +281,7 @@ function accMul(arg1, arg2) {
  */
 function throttle(fun, delay) {
   let valid = true;
-  return function() {
+  return function () {
     let context = this;
     let args = arguments;
     if (!valid) {
@@ -514,4 +514,233 @@ const formatSize = size => {
     index++
   }
   return Math.round(size * 100) / 100 + unitsHash[index]
+}
+
+/**
+ * constrcut 方法
+ * 根据提供的 id, pid 和 children 将一个个节点构建成一棵或者多棵树
+ * @param nodes 节点对象
+ * @param config 配置对象
+ */
+const construct = (nodes, config) => {
+  const id = config && config.id || 'id'
+  const pid = config && config.pid || 'parentid'
+  const children = config && config.children || 'children'
+
+  const idMap = {}
+  const jsonTree = []
+
+  nodes.forEach((v) => {
+    v && (idMap[v[id]] = v)
+  })
+  nodes.forEach((v) => {
+    if (v) {
+      let parent = idMap[v[pid]]
+      if (parent) {
+        !parent[children] && (parent[children] = [])
+        parent[children].push(v)
+      } else {
+        jsonTree.push(v)
+      }
+    }
+  })
+
+  return jsonTree
+}
+
+/**
+ * destruct 方法
+ * 根据配置的 id, pid 和 children 把解构化的树型对象拆解为一个个节点
+ * @param forest 单个或者多个树型对象
+ * @param config 配置
+ */
+const destruct = (forest, config) => {
+  const id = config && config.id || 'id'
+  const pid = config && config.pid || 'pid'
+  const children = config && config.children || 'children'
+
+  function flatTree(tree) {
+    const queue = [tree]
+    const result = []
+    while (queue.length) {
+      let currentNode = queue.shift()
+      if (currentNode.hasOwnProperty(id)) {
+        if (!currentNode.hasOwnProperty(pid)) {
+          currentNode = {
+            ...currentNode,
+            [pid]: null
+          }
+        }
+        if (currentNode[children]) {
+          currentNode[children].forEach((v) => {
+            v && queue.push({
+              ...v,
+              [pid]: currentNode[id]
+            })
+          })
+        }
+        result.push(currentNode)
+        delete currentNode[children]
+      } else {
+        throw new Error('you need to specify the [id] of the json tree')
+      }
+    }
+    return result
+  }
+  if (Array.isArray(forest)) {
+    return forest.map((v) => flatTree(v)).reduce((pre, cur) => pre.concat(cur))
+  } else {
+    return flatTree(forest)
+  }
+}
+
+/**
+ * 深拷贝
+ *
+ * @param {*} origin
+ * @return {*} 
+ */
+const deepClone = (origin) => {
+  var isObject = any => typeof any === 'object' && any !== null
+  var isArray = any => Object.prototype.toString.call(any) === '[object Array]'
+  if (!isObject(origin)) {
+    return origin
+  }
+  var target = isArray(origin) ? [] : {}
+  for (var prop in origin) {
+    if (origin.hasOwnProperty(prop)) {
+      var value = origin[prop]
+      if (isObject(value)) {
+        target[prop] = deepClone(value)
+      } else {
+        target[prop] = value
+      }
+      //if...else...可换成三目运算符
+      //target[prop] = isObject(value) ? deepClone(value) : value
+    }
+  }
+  return target
+}
+
+/**
+ * 隐藏中间四位数的电话号码
+ *
+ * @param {*} phone
+ * @return {*} 
+ */
+const hidePhone = (phone) => {
+  var tel = phone;
+  tel = '' + tel;
+  var ary = tel.split('');
+  console.log(ary);
+  ary.splice(3, 4, '****');
+  var tel1 = ary.join('');
+  return tel1
+}
+
+/**
+ * 比较两个日期的大小
+ *
+ * @param {*} date1
+ * @param {*} date2
+ * @return {*} 
+ */
+const compareDate = (date1, date2) => {
+  date1 = date1.replace(/-/g, '/');
+  date2 = date2.replace(/-/g, '/');
+  var oDate1 = new Date(date1);
+  var oDate2 = new Date(date2);
+  if (oDate1.getTime() > oDate2.getTime()) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+/**
+ * 判断是否为空对象、 空数组等
+ *
+ * @param {*} obj
+ * @return {*} 
+ */
+const isEmpty = (obj) => {
+  //检验null和undefined和''
+  if (!obj && obj !== 0) {
+    return true;
+  }
+  //检验数组
+  if (Array.prototype.isPrototypeOf(obj) && obj.length === 0) {
+    return true;
+  }
+  //检验对象
+  if (Object.prototype.isPrototypeOf(obj) && Object.keys(obj).length === 0) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * 判断两个数组是否有相同的值
+ *
+ * @param {*} a1
+ * @param {*} a2
+ * @return {*} 
+ */
+const ExistsSameValues = (a1, a2) => {
+  let exists = false;
+  if (a1 instanceof Array && a2 instanceof Array) {
+    for (var i = 0, iLen = a1.length; i < iLen; i++) {
+      for (var j = 0, jLen = a2.length; j < jLen; j++) {
+        if (a1[i] === a2[j]) {
+          return true;
+        }
+      }
+    }
+  }
+  return exists;
+}
+
+
+const parseTime = (date, fmt) => {
+  let ret;
+  const opt = {
+    'y+': date.getFullYear().toString(), // 年
+    'm+': (date.getMonth() + 1).toString(), // 月
+    'd+': date.getDate().toString(), // 日
+    'H+': date.getHours().toString(), // 时
+    'M+': date.getMinutes().toString(), // 分
+    'S+': date.getSeconds().toString() // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (let k in opt) {
+    ret = new RegExp('(' + k + ')').exec(fmt);
+    if (ret) {
+      fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, '0')))
+    }
+  }
+  return fmt;
+}
+
+/**
+ * 产生任意长度随机字母数字组合 randomFlag - 是否任意长度 min - 任意长度最小位[固定位数] max - 任意长度最大位
+ *
+ * @param {*} randomFlag
+ * @param {*} min
+ * @param {*} max
+ * @return {*} 
+ */
+const randomWord = (randomFlag, min, max) => {
+  var str = '',
+    range = min,
+    arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+  // 随机产生
+  if (randomFlag) {
+    range = Math.round(Math.random() * (max - min)) + min;
+  }
+  for (var i = 0; i < range; i++) {
+    let pos = Math.round(Math.random() * (arr.length - 1));
+    str += arr[pos];
+  }
+  return str;
 }
