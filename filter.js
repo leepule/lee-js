@@ -1,3 +1,12 @@
+/** 
+ * main.js 引入全局
+ * 
+ import * as filters from '@/utils/filters';
+ Object.keys(filters).forEach((key) => {
+   Vue.filter(key, filters[key]);
+ });
+*/
+
 /**
  * 日期格式化 {{ data | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}
  *
