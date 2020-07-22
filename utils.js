@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-21 13:42:15
- * @LastEditTime: 2020-07-21 13:58:47
+ * @LastEditTime: 2020-07-22 09:23:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /le-js/utils.js
@@ -441,4 +441,77 @@ const getBeforAfterTime = function (type = null, number = 0) {
       var retrundate = y + '/' + m + '/' + d;
   }
   return retrundate;
+}
+
+/**
+ * 连字符转驼峰 toCamelCase('hello-world') // helloWorld
+ *
+ * @param {string} [str='']
+ * @param {string} [separator='-']
+ * @return {*} 
+ */
+const toCamelCase = (str = '', separator = '-') => {
+  if (typeof str !== 'string') {
+    throw new Error('Argument must be a string')
+  }
+  if (str === '') {
+    return str
+  }
+  const newExp = new RegExp('\\-\(\\w\)', 'g')
+  return str.replace(newExp, (matched, $1) => {
+    return $1.toUpperCase()
+  })
+}
+
+/**
+ * 驼峰转连字符  fromCamelCase('helloWorld') // hello-world
+ *
+ * @param {string} [str='']
+ * @param {string} [separator='-']
+ * @return {*} 
+ */
+const fromCamelCase = (str = '', separator = '-') => {
+  if (typeof str !== 'string') {
+    throw new Error('Argument must be a string')
+  }
+  if (str === '') {
+    return str
+  }
+  return str.replace(/([A-Z])/g, `${separator}$1`).toLowerCase()
+}
+
+/**
+ * 获取指定范围内的随机数 getRandom(1, 100)
+ *
+ * @param {number} [min=0]
+ * @param {number} [max=100]
+ * @return {*} 
+ */
+const getRandom = (min = 0, max = 100) => {
+  if (typeof min !== 'number' || typeof max !== 'number') {
+    throw new Error('Argument(s) is illegal !')
+  }
+  if (min > max) {
+    [min, max] = [max, min]
+  }
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+/**
+ * 文件尺寸格式化 formatSize('10240') // 10KB  formatSize('10240000') // 9.77MB
+ *
+ * @param {*} size
+ * @return {*} 
+ */
+const formatSize = size => {
+  if (typeof + size !== 'number') {
+    throw new Error('Argument(s) is illegal !')
+  }
+  const unitsHash = 'B,KB,MB,GB'.split(',')
+  let index = 0
+  while (size > 1024 && index < unitsHash.length) {
+    size /= 1024
+    index++
+  }
+  return Math.round(size * 100) / 100 + unitsHash[index]
 }
