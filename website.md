@@ -17,8 +17,7 @@
 [类星球高科技旋转动画(原创)](http://www.jq22.com/jquery-info17962)  
 [李观杰的博客 - CSDN博客](https://blog.csdn.net/liguanjie8)  
 [码市 – 互联网软件外包服务平台](https://codemart.com/developers)  
-[平顺•渐进式
-[瀑布流](https://evenyao.github.io/waterfall-demo/Demo/%E7%80%91%E5%B8%83%E6%B5%81%20-%20demo.html)  
+[平顺•渐进式瀑布流](https://evenyao.github.io/waterfall-demo/Demo/%E7%80%91%E5%B8%83%E6%B5%81%20-%20demo.html)  
 [前端 - InfoQ](https://www.infoq.cn/topic/33)  
 [前端基础进阶系列 - 简书](https://www.jianshu.com/p/cd3fee40ef59?tdsourcetag=s_pctim_aiomsg)  
 [前端数据可视化插件（四）关系图 - 夕阳白雪 - 博客园](https://www.cnblogs.com/xiyangbaixue/p/4034449.html)  
