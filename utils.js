@@ -1,12 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2020-07-21 13:42:15
- * @LastEditTime: 2020-07-22 10:45:00
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /le-js/utils.js
- */
-
 /**
  * 表单序列化
  *
